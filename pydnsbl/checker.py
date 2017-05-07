@@ -1,132 +1,131 @@
+"""
+DNSBL async checker
+Basic usage:
+    checker = DNSBLChecker()
+    result = cheker.check_ip('...')
+    print(result.blacklisted)
+    print(result.categories)
+    print(result.detected_by)
+"""
+
+import socket
 import asyncio
 import aiodns
-import socket
-from providers import BASE_PROVIDERS
+from .providers import Provider, BASE_PROVIDERS, DNSBL_CATEGORIES
 
 class DNSBLResult(object):
-    """ 
-    DNSBL Result class to keep all info about ip request results.
     """
-    def __init__(self, ip=None, results=None):
-        self.ip = ip
+    DNSBL Result class to keep all info about ip request results.
+
+    Attributes:
+        * ip - checked ip
+        * providers - dnsbl that was asked for response while checking
+        * failed_provider - dnsbl that was unable to provide result due
+            to connection issues (connection timeout etc...)
+        * detected_by - dnsbl that have ip listed and categories detected by
+            this dnsbls. dict: {'dnsbl_list_name': list(categories_from_this_dnsbl)}
+        * categories - set of dnsbl categories from all providers (subset of DNSBL_CATEGORIES)
+    """
+    def __init__(self, addr=None, results=None):
+        self.addr = addr
         self._results = results
+        self.blacklisted = False
         self.providers = []
-        self.detected_by = {} 
+        self.failed_providers = []
+        self.detected_by = {}
         self.categories = set()
         self.process_results()
 
     def process_results(self):
         """ Process results by providers """
-        for provider, result in self._results:
+        for result in self._results:
+            provider = result.provider
             self.providers.append(provider)
-            if not isinstance(result, list):
+            if result.error:
+                self.failed_providers.append(provider)
                 continue
-
-            provider_categories =  provider.process_result(result)
+            if not result.response:
+                continue
+            # set blacklisted to True if ip is detected with at least one dnsbl
+            self.blacklisted = True
+            provider_categories = provider.process_response(result.response)
+            assert provider_categories.issubset(DNSBL_CATEGORIES)
             self.categories = self.categories.union(provider_categories)
             self.detected_by[provider.host] = list(provider_categories)
 
-    @property
-    def blacklisted(self):
-        if len(self.detected_by)>0:
-            return True
-
     def __repr__(self):
-        blacklisted = self.blacklisted and '[BLACKLISTED]' or ''
-        return "<DNSBLResult: %s %s (%d/%d)>" % (self.ip, blacklisted, len(self.detected_by),
-                                              len(self.providers))
+        blacklisted = '[BLACKLISTED]' if self.blacklisted else ''
+        return "<DNSBLResult: %s %s (%d/%d)>" % (self.addr, blacklisted, len(self.detected_by),
+                                                 len(self.providers))
+
+class DNSBLResponse(object):
+    """
+    DNSBL Response object
+    """
+    def __init__(self, addr=None, provider=None, response=None, error=None):
+        self.addr = addr
+        self.provider = provider
+        self.response = response
+        self.error = error
 
 class DNSBLChecker(object):
-    """ 
-    Checker for DNSBL lists 
-    Arguments:
-        providers - list of providers
-        timeout - timeout of dns requests
-        tries - retry times
+    """ Checker for DNSBL lists
+        Arguments:
+            * providers(list) - list of providers (Provider instance or str)
+            * timeout(int) - timeout of dns requests will be passed to resolver
+            * tries(int) - retry times
     """
 
     def __init__(self, providers=BASE_PROVIDERS, timeout=5, tries=2):
-        self.providers = BASE_PROVIDERS
+        self.providers = []
+        for provider in providers:
+            if not isinstance(provider, Provider):
+                provider = Provider(host=provider)
+            self.providers.append(provider)
         self.loop = asyncio.get_event_loop()
         self.resolver = aiodns.DNSResolver(timeout=timeout, tries=tries, loop=self.loop)
 
-    async def dnsbl_request(self, ip, provider, fail_silently=True):
-        """ 
+    async def dnsbl_request(self, addr, provider):
+        """
         Make lookup to dnsbl provider
         Parameters:
-            ip (string) - ip address to check
-            provider (string) - dnsbl provider
-            fail_silently (boolean) - when True then will not raise exception 
-                                          if request fails (timeout etc)
+            * addr (string) - ip address to check
+            * provider (string) - dnsbl provider
 
         Returns:
-            tuple (provider, answer) - answer could contain dns response of the 
-                server, or None (if ip is not listed) in this DNSBL or DNSError 
-                exception if request fails and fail_silently == True
+            * DNSBLResponse object
 
         Raises:
-            ValueError
+            * ValueError
         """
+        response = None
+        error = None
         try:
-            socket.inet_aton(ip)
+            socket.inet_aton(addr)
         except socket.error:
             raise ValueError('wrong ip format')
-        ip_reversed = '.'.join(reversed(ip.split('.')))
+        ip_reversed = '.'.join(reversed(addr.split('.')))
         dnsbl_query = "%s.%s" % (ip_reversed, provider.host)
         try:
-            answer = await self.resolver.query(dnsbl_query, 'A')
-        except aiodns.error.DNSError as error:
-            if error.args[0] == 4:
-                # domain name not found:
-                return provider, None
-            else:
-                if fail_silently:
-                    return provider, None
-                else:
-                    return provider, error
-        else:
-            return provider, answer 
+            response = await self.resolver.query(dnsbl_query, 'A')
+        except aiodns.error.DNSError as exc:
+            if exc.args[0] != 4: # 4: domain name not found:
+                error = exc
 
-    def check_ip(self, ip):
-        """ Check ip with dnsbl providers """
+        return DNSBLResponse(addr=addr, provider=provider, response=response, error=error)
 
-        tasks = []
-        for provider in self.providers:
-            tasks.append(self.dnsbl_request(ip, provider))
-        results = self.loop.run_until_complete(asyncio.gather(*tasks))
-        return DNSBLResult(ip=ip, results=results) 
-
-    def check_providers(self, hide_good=False):
-        """ 
-        Check dnsbl availability. Utility function to test your providers. 
-        
-        Parameters:
-            hide_good (boolean) - if True then only dnsbl with problems will be shown
+    def check_ip(self, addr):
         """
-        ip = '8.8.8.8'
+        Check ip with dnsbl providers.
+        Parameters:
+            * addr - ip address to check
+
+        Returns:
+            * DNSBLResult object
+        """
+
         tasks = []
         for provider in self.providers:
-            tasks.append(self.dnsbl_request(ip, provider, fail_silently=False))
-        responses = self.loop.run_until_complete(asyncio.gather(*tasks, return_exceptions=True))
-        check_results = []
-        for provider,result in responses:
-            if result is None:
-                # everything is ok, google ip should not be listed
-                if hide_good:
-                    continue
-                check_result = 'ok'
-            elif isinstance(result, aiodns.error.DNSError):
-                check_result = 'request error'
-            elif isinstance(result, list):
-                # if google is listed this is a reason for additional check of the list
-                check_result = 'warning! google is listed'
-            check_results.append((provider, check_result))
-        return check_results 
-
-
-#checker = DNSBLChecker()
-#res = checker.check_ip('68.128.212.240')
-#res = checker.check_providers(hide_good=True)
-#print(res)
-#print(res.categories)
-print(res.detected_by)
+            tasks.append(self.dnsbl_request(addr, provider))
+        results = self.loop.run_until_complete(asyncio.gather(*tasks))
+        return DNSBLResult(addr=addr, results=results)

@@ -1,30 +1,36 @@
-""" Here is the base provider list with class """
+""" 
+Place to define providers.
+Most part of _BASE_PROVIDERS was taken from https://github.com/vincecarney/dnsbl
+"""
 ### DNSBL CATEGORIES ###
 # providers answers could be interpreted in one of the following categories
-DNSBL_CATEGORIES = ['spam', 'proxy', 'malware', 'botnet', 'exploits', 'unknown']
+DNSBL_CATEGORIES = set(['spam', 'proxy', 'malware', 'botnet', 'exploits', 'unknown'])
 
 class Provider(object):
 
     def __init__(self, host):
         self.host = host
 
-    def process_result(self, results):
-        """ 
+    def process_response(self, response):
+        """
         Usually DNSBL lists returns ip-codes like this: 127.0.0.2
-        Some of the lists provides some additional specification about
-        this codes and their meaning. This function is helpful to build mapping 
+        Some of the lists provides some specification about
+        this codes and their meaning. This function will be helpful to build mapping
         between response codes and DNSBL_CATEGORIES.  It is used in construction
-        if DNSBLResult from DNSBLChecker. You should redefine this function
-        in your custom providers.
-        
+        of DNSBLResult. You should redefine this function
+        in your custom providers according to their specification.
+
         Parmeters:
-            result - list of ares dns responses
+            result - list of c-ares dns responses
 
         Returns:
             set of categories (DNSBL_CATEGORIES subset)
 
         """
-        return set(['unknown']) 
+        result = set()
+        if response:
+            return set(['unknown'])
+        return result
 
     def __repr__(self):
         return "<Provider: %s>" % self.host
@@ -35,17 +41,17 @@ class ZenSpamhaus(Provider):
     """
 
     def __init__(self):
-        self.host = 'zen.spamhaus.org'
+        Provider.__init__(self, host='zen.spamhaus.org')
 
-    def process_result(self, results):
-        categories = set() 
-        for result in results:
+    def process_response(self, response):
+        categories = set()
+        for result in response:
             if result.host in ['127.0.0.2', '127.0.0.3', '127.0.0.9']:
                 categories.add('spam')
             if result.host in ['127.0.0.4', '127.0.0.5', '127.0.0.6', '127.0.0.7']:
                 categories.add('exploits')
         return categories
-            
+
 
 # this list is converted into list of Providers bellow
 _BASE_PROVIDERS = [
