@@ -1,11 +1,14 @@
 Pydnsbl
 ===============
-Async `dnsbl <https://en.wikipedia.org/wiki/DNSBL>`_ lists checker based on asyncio/aiodns. Checks if ip is listed in anti-spam dns blacklists. Multiple dns blacklists supported. Use aiodns for async dns requests. Usually ip check for 60+ lists 
-takes less than one second.
+Async `dnsbl <https://en.wikipedia.org/wiki/DNSBL>`_ lists checker based on asyncio/aiodns. Checks if ip is listed in anti-spam dns blacklists. Multiple dns blacklists supported. Use aiodns for async dns requests. Usually ip check run for 60+ lists takes less than one second.
 
 Installation
 ----------------
 pip intall pydnsbl
+
+Requirements
+----------------
+python >= 3.5, aiodns
 
 Usage
 ------------------
@@ -40,4 +43,4 @@ Take a look into providers.py file. Use **Provider** class to create your custom
 
 Contact
 ------------------
-Feel free to contact me  ippolitov87 at gmail.com  
+Feel free to contact me:  ippolitov87 at gmail.com
