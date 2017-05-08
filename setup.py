@@ -7,7 +7,7 @@ import sys
 
 def get_long_description():
     path = os.path.join(os.path.dirname(__file__), 'README.rst')
-        with open(path) as f:
+    with open(path) as f:
         return f.read()
 
 requirements = [
