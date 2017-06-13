@@ -76,14 +76,19 @@ class DNSBLChecker(object):
             * tries(int) - retry times
     """
 
-    def __init__(self, providers=BASE_PROVIDERS, timeout=5, tries=2):
+    def __init__(self, providers=BASE_PROVIDERS, timeout=5, 
+                 tries=2, concurrency=200, loop=None):
         self.providers = []
         for provider in providers:
             if not isinstance(provider, Provider):
                 provider = Provider(host=provider)
             self.providers.append(provider)
-        self.loop = asyncio.get_event_loop()
-        self.resolver = aiodns.DNSResolver(timeout=timeout, tries=tries, loop=self.loop)
+        if not loop:
+            self._loop = asyncio.get_event_loop()
+        else:
+            self._loop = loop
+        self._resolver = aiodns.DNSResolver(timeout=timeout, tries=tries, loop=self._loop)
+        self._semaphore = asyncio.Semaphore(concurrency)
 
     async def dnsbl_request(self, addr, provider):
         """
@@ -107,16 +112,17 @@ class DNSBLChecker(object):
         ip_reversed = '.'.join(reversed(addr.split('.')))
         dnsbl_query = "%s.%s" % (ip_reversed, provider.host)
         try:
-            response = await self.resolver.query(dnsbl_query, 'A')
+            async with self._semaphore:
+                response = await self._resolver.query(dnsbl_query, 'A')
         except aiodns.error.DNSError as exc:
             if exc.args[0] != 4: # 4: domain name not found:
                 error = exc
 
         return DNSBLResponse(addr=addr, provider=provider, response=response, error=error)
 
-    def check_ip(self, addr):
+    async def _check_ip(self, addr):
         """
-        Check ip with dnsbl providers.
+        Async check ip with dnsbl providers.
         Parameters:
             * addr - ip address to check
 
@@ -127,5 +133,27 @@ class DNSBLChecker(object):
         tasks = []
         for provider in self.providers:
             tasks.append(self.dnsbl_request(addr, provider))
-        results = self.loop.run_until_complete(asyncio.gather(*tasks))
+        results = await asyncio.gather(*tasks)
         return DNSBLResult(addr=addr, results=results)
+
+    def check_ip(self, addr):
+        """
+        Sync check ip with dnsbl providers.
+        Parameters:
+            * addr - ip address to check
+
+        Returns:
+            * DNSBLResult object
+        """
+
+        return self._loop.run_until_complete(self._check_ip(addr))
+
+    def check_ips(self, addrs):
+        """
+        sync check multiple ips
+        """
+        tasks = []
+        for addr in addrs:
+            tasks.append(self._check_ip(addr))
+        return self._loop.run_until_complete(asyncio.gather(*tasks)) 
+        

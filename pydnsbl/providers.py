@@ -58,7 +58,6 @@ _BASE_PROVIDERS = [
     'aspews.ext.sorbs.net',
     'b.barracudacentral.org',
     'bl.deadbeef.com',
-    'bl.emailbasura.org',
     'bl.spamcannibal.org',
     'bl.spamcop.net',
     'blackholes.five-ten-sg.com',
