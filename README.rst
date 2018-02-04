@@ -32,14 +32,17 @@ Extending/overriding providers
 -------------------------------
 Basic 
 ^^^^^^^^^^^^^^^^^^^^^
->>> from pydnsbl import DNSBLChecker
->>> providers = BASE_PROVIDERS + ['yourprovider1.com', ...]
+>>> from pydnsbl import DNSBLChecker, providers
+>>> providers = BASE_PROVIDERS + [providers.Provider('yourprovider1.com'), ...]
 >>> checker = DNSBLChecker(providers=providers)
 # in providers parameter you can pass providers dnsbl host or Provider class object (see Advanced topic below)
 
 Advanced
 ^^^^^^^^^^^^^^^^^^^^^
-Take a look into providers.py file. Use **Provider** class to create your custom providers. Override **process_response** method of **Provider** class to map providers response codes (127.0.0.x) to DNSBLChecker categories. 
+Take a look into providers.py file.
+
+* Use **Provider** class to create your custom providers. 
+* Override **process_response** method of **Provider** class to map providers response codes (127.0.0.x) to DNSBLChecker categories. 
 
 Contact
 ------------------
