@@ -40,8 +40,8 @@ class ZenSpamhaus(Provider):
         https://www.spamhaus.org/faq/section/DNSBL%20Usage#200
     """
 
-    def __init__(self):
-        Provider.__init__(self, host='zen.spamhaus.org')
+    def __init__(self, host='zen.spamhaus.org'):
+        Provider.__init__(self, host=host)
 
     def process_response(self, response):
         categories = set()
@@ -58,7 +58,6 @@ _BASE_PROVIDERS = [
     'aspews.ext.sorbs.net',
     'b.barracudacentral.org',
     'bl.deadbeef.com',
-    'bl.spamcannibal.org',
     'bl.spamcop.net',
     'blackholes.five-ten-sg.com',
     'blacklist.woody.ch',
@@ -75,7 +74,6 @@ _BASE_PROVIDERS = [
     'dnsbl.inps.de',
     'dnsbl.sorbs.net',
     'drone.abuse.ch',
-    'duinv.aupads.org',
     'dul.dnsbl.sorbs.net',
     'dul.ru',
     'dyna.spamrats.com',
@@ -87,7 +85,6 @@ _BASE_PROVIDERS = [
     'korea.services.net',
     'misc.dnsbl.sorbs.net',
     'noptr.spamrats.com',
-    'orvedb.aupads.org',
     'phishing.rbl.msrbl.net',
     'proxy.bl.gweep.ca',
     'proxy.block.transip.nl',

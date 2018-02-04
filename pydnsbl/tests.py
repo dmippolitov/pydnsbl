@@ -18,5 +18,4 @@ def test_providers():
     assert not res.blacklisted
     assert not res.categories
     assert not res.detected_by
-    print(res.failed_providers)
     assert not res.failed_providers

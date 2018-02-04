@@ -80,8 +80,7 @@ class DNSBLChecker(object):
                  tries=2, concurrency=200, loop=None):
         self.providers = []
         for provider in providers:
-            if not isinstance(provider, Provider):
-                provider = Provider(host=provider)
+            assert isinstance(provider, Provider)
             self.providers.append(provider)
         if not loop:
             self._loop = asyncio.get_event_loop()
