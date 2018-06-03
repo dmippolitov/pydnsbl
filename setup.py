@@ -17,10 +17,10 @@ requirements = [
 
 setup(
     name='pydnsbl',
-    version='0.6.1',
+    version='0.6.2',
     description='Async dnsbl lists checker based on asyncio/aiodns.',
     long_description=get_long_description(),
-    url='https://github.com/dmippoltiov/pydnsbl/',
+    url='https://github.com/dmippolitov/pydnsbl/',
 
     author=u'Dmitry ippolitov',
     author_email='ippolitov87@gmail.com',
