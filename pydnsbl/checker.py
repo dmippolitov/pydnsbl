@@ -83,7 +83,8 @@ class DNSBLChecker(object):
             assert isinstance(provider, Provider)
             self.providers.append(provider)
         if not loop:
-            self._loop = asyncio.get_event_loop()
+            self._loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(self._loop)
         else:
             self._loop = loop
         self._resolver = aiodns.DNSResolver(timeout=timeout, tries=tries, loop=self._loop)
