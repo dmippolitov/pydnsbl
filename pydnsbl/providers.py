@@ -1,4 +1,4 @@
-""" 
+"""
 Place to define providers.
 Most part of _BASE_PROVIDERS was taken from https://github.com/vincecarney/dnsbl
 """
@@ -100,8 +100,6 @@ _BASE_PROVIDERS = [
     'spam.spamrats.com',
     'spamlist.or.kr',
     'spamrbl.imp.ch',
-    'tor.dnsbl.sectoor.de',
-    'torserver.tor.dnsbl.sectoor.de',
     'ubl.lashback.com',
     'ubl.unsubscore.com',
     'virbl.bit.nl',
