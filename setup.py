@@ -11,7 +11,7 @@ def get_long_description():
         return f.read() 
 
 requirements = [
-    'aiodns>=1.1.1,<1.2',
+    'aiodns>=1.1.1,<=2.0',
 ]
 
 
