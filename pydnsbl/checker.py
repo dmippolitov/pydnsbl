@@ -18,7 +18,7 @@ class DNSBLResult(object):
     DNSBL Result class to keep all info about ip request results.
 
     Attributes:
-        * ip - checked ip
+        * addr - checked ip
         * providers - dnsbl that was asked for response while checking
         * failed_provider - dnsbl that was unable to provide result due
             to connection issues (connection timeout etc...)
