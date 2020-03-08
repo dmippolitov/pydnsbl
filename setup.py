@@ -6,7 +6,7 @@ import os
 import sys
 
 def get_long_description():
-    path = os.path.join(os.path.dirname(__file__), 'README.rst')
+    path = os.path.join(os.path.dirname(__file__), 'README.md')
     with open(path) as f:
         return f.read() 
 
@@ -17,7 +17,7 @@ requirements = [
 
 setup(
     name='pydnsbl',
-    version='0.6.4',
+    version='1.0.0',
     description='Async dnsbl lists checker based on asyncio/aiodns.',
     long_description=get_long_description(),
     url='https://github.com/dmippolitov/pydnsbl/',
@@ -31,7 +31,6 @@ setup(
     zip_safe=False,
     install_requires=requirements,
     classifiers=[
-        'Development Status :: 4 - Beta',
         'Environment :: Web Environment',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: MIT License',

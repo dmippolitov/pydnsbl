@@ -4,7 +4,14 @@ Most part of _BASE_PROVIDERS was taken from https://github.com/vincecarney/dnsbl
 """
 ### DNSBL CATEGORIES ###
 # providers answers could be interpreted in one of the following categories
-DNSBL_CATEGORIES = set(['spam', 'proxy', 'malware', 'botnet', 'exploits', 'unknown'])
+DNSBL_CATEGORY_UNKNOWN = 'unknown'
+DNSBL_CATEGORY_SPAM = 'spam'
+DNSBL_CATEGORY_EXPLOITS = 'exploits'
+DNSBL_CATEGORY_PHISH = 'phish'
+DNSBL_CATEGORY_MALWARE = 'malware'
+DNSBL_CATEGORY_CNC = 'cnc'
+DNSBL_CATEGORY_ABUSED = 'abused'
+DNSBL_CATEGORY_LEGIT = 'legit'
 
 class Provider(object):
 
@@ -29,7 +36,7 @@ class Provider(object):
         """
         result = set()
         if response:
-            return set(['unknown'])
+            result.add(DNSBL_CATEGORY_UNKNOWN)
         return result
 
     def __repr__(self):
@@ -47,13 +54,15 @@ class ZenSpamhaus(Provider):
         categories = set()
         for result in response:
             if result.host in ['127.0.0.2', '127.0.0.3', '127.0.0.9']:
-                categories.add('spam')
-            if result.host in ['127.0.0.4', '127.0.0.5', '127.0.0.6', '127.0.0.7']:
-                categories.add('exploits')
+                categories.add(DNSBL_CATEGORY_SPAM)
+            elif result.host in ['127.0.0.4', '127.0.0.5', '127.0.0.6', '127.0.0.7']:
+                categories.add(DNSBL_CATEGORY_EXPLOITS)
+            else:
+                categories.add(DNSBL_CATEGORY_UNKNOWN)
         return categories
 
-
 # this list is converted into list of Providers bellow
+
 _BASE_PROVIDERS = [
     'aspews.ext.sorbs.net',
     'b.barracudacentral.org',
@@ -109,4 +118,39 @@ _BASE_PROVIDERS = [
     'zombie.dnsbl.sorbs.net',
 ]
 
+class DblSpamhaus(Provider):
+    """ Spamhaus domain blacklist
+        https://www.spamhaus.org/faq/section/Spamhaus%20DBL#291
+    """
+    CATEGORY_MAPPING = {
+        '127.0.1.2': {DNSBL_CATEGORY_SPAM},
+        '127.0.1.4': {DNSBL_CATEGORY_PHISH},
+        '127.0.1.5': {DNSBL_CATEGORY_MALWARE},
+        '127.0.1.6': {DNSBL_CATEGORY_CNC},
+        '127.0.1.102': {DNSBL_CATEGORY_ABUSED, DNSBL_CATEGORY_LEGIT, DNSBL_CATEGORY_SPAM},
+        '127.0.1.103': {DNSBL_CATEGORY_ABUSED, DNSBL_CATEGORY_SPAM},
+        '127.0.1.104': {DNSBL_CATEGORY_ABUSED, DNSBL_CATEGORY_LEGIT, DNSBL_CATEGORY_PHISH},
+        '127.0.1.105': {DNSBL_CATEGORY_ABUSED, DNSBL_CATEGORY_LEGIT, DNSBL_CATEGORY_MALWARE},
+        '127.0.1.106': {DNSBL_CATEGORY_ABUSED,  DNSBL_CATEGORY_LEGIT, DNSBL_CATEGORY_CNC}
+    }
+
+    def __init__(self, host='dbl.spamhaus.org'):
+        Provider.__init__(self, host=host)
+
+    def process_response(self, response):
+        categories = set()
+        for result in response:
+            result_categories = self.CATEGORY_MAPPING.get(result.host, {DNSBL_CATEGORY_UNKNOWN})
+            categories.update(result_categories)
+
+        return categories
+
+# list of domain providers
+_DOMAIN_PROVIDERS = [
+    'uribl.spameatingmonkey.net',
+    'multi.surbl.org',
+    'rhsbl.sorbs.net '
+]
+
 BASE_PROVIDERS = [Provider(host) for host in _BASE_PROVIDERS] + [ZenSpamhaus()]
+BASE_DOMAIN_PROVIDERS = [Provider(host) for host in _DOMAIN_PROVIDERS] + [DblSpamhaus()]
