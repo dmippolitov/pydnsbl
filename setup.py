@@ -12,14 +12,16 @@ def get_long_description():
 
 requirements = [
     'aiodns>=1.1.1,<=2.0',
+    'idna>=2.9,<3'
 ]
 
 
 setup(
     name='pydnsbl',
-    version='1.0.0',
+    version='1.0.1',
     description='Async dnsbl lists checker based on asyncio/aiodns.',
     long_description=get_long_description(),
+    long_description_content_type='text/markdown',
     url='https://github.com/dmippolitov/pydnsbl/',
 
     author=u'Dmitry ippolitov',
