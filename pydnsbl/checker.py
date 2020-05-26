@@ -191,5 +191,5 @@ class DNSBLChecker(DNSBLIpChecker):
         return self.check(addr)
 
     def check_ips(self, addrs):
-        warnings.warn('deprecated, use bullk check method instead', DeprecationWarning)
+        warnings.warn('deprecated, use bulk check method instead', DeprecationWarning)
         return self.bulk_check(addrs)
