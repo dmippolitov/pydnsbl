@@ -79,7 +79,6 @@ _BASE_PROVIDERS = [
     'dnsbl-2.uceprotect.net',
     'dnsbl-3.uceprotect.net',
     'dnsbl.cyberlogic.net',
-    'dnsbl.inps.de',
     'dnsbl.sorbs.net',
     'drone.abuse.ch',
     'dul.dnsbl.sorbs.net',
