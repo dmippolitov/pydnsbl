@@ -66,7 +66,6 @@ class ZenSpamhaus(Provider):
 _BASE_PROVIDERS = [
     'aspews.ext.sorbs.net',
     'b.barracudacentral.org',
-    'bl.deadbeef.com',
     'bl.spamcop.net',
     'blackholes.five-ten-sg.com',
     'blacklist.woody.ch',
@@ -75,7 +74,6 @@ _BASE_PROVIDERS = [
     'combined.abuse.ch',
     'combined.rbl.msrbl.net',
     'db.wpbl.info',
-    'dnsbl-1.uceprotect.net',
     'dnsbl-2.uceprotect.net',
     'dnsbl-3.uceprotect.net',
     'dnsbl.cyberlogic.net',

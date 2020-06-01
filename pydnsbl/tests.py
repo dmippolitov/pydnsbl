@@ -32,11 +32,12 @@ def test_wrong_ip_format():
 # DOMAIN TESTS
 def test_domain_checker():
     checker = DNSBLDomainChecker()
-    res = checker.check('belonging708-info.xyz')
+    malicious_domain = 'etoroinvestmentltd.com'
+    res = checker.check(malicious_domain)
     assert res.blacklisted
     assert res.categories
     assert res.detected_by
-    results = checker.bulk_check(['belonging708-info.xyz', 'google.com'])
+    results = checker.bulk_check([malicious_domain, 'google.com'])
     # check bulk check
     assert results[0].detected_by == res.detected_by
     assert not results[1].blacklisted
