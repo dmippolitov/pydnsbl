@@ -172,6 +172,7 @@ class DNSBLDomainChecker(BaseDNSBLChecker):
                  tries=tries, concurrency=concurrency, loop=loop)
 
     def prepare_query(self, request):
+        request = request.lower() # Adding support for capitalized letters in domain name.
         domain_idna = idna.encode(request).decode()
         if not self.DOMAIN_REGEX.match(domain_idna):
             raise ValueError('should be valid domain, got %s' % domain_idna)
