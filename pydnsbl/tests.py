@@ -65,6 +65,16 @@ def test_wrong_domain_format():
         with pytest.raises(ValueError):
              print(checker.check(ip))
 
+def test_capitalization_in_domain():
+    capitalized_domains = ['Google.com', 'Facebook.com']
+    for domain in capitalized_domains:
+        checker = DNSBLDomainChecker()
+        res = checker.check(domain)
+        assert not res.blacklisted
+        assert not res.categories
+        assert not res.detected_by
+        assert not res.failed_providers
+
 
 ## COMPAT TESTS
 def test_checker_compat_0_6():
