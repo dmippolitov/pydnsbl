@@ -18,7 +18,7 @@ requirements = [
 
 setup(
     name='pydnsbl',
-    version='1.0.3',
+    version='1.0.4',
     description='Async dnsbl lists checker based on asyncio/aiodns.',
     long_description=get_long_description(),
     long_description_content_type='text/markdown',
