@@ -9,6 +9,7 @@ Basic usage:
 """
 import re
 import abc
+import sys
 import idna
 import socket
 import asyncio
@@ -17,6 +18,10 @@ import warnings
 import aiodns
 
 from .providers import Provider, BASE_PROVIDERS, BASE_DOMAIN_PROVIDERS
+
+if sys.platform == 'win32' and sys.version_info >= (3, 8):
+    # fixes https://github.com/dmippolitov/pydnsbl/issues/12
+    asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
 class DNSBLResult:
     """
