@@ -7,12 +7,12 @@ Basic usage:
     print(result.categories)
     print(result.detected_by)
 """
-import re
 import abc
-import sys
-import idna
-import socket
 import asyncio
+import idna
+import ipaddress
+import re
+import sys
 import warnings
 
 import aiodns
@@ -155,11 +155,16 @@ class DNSBLIpChecker(BaseDNSBLChecker):
     Checker for ips
     """
     def prepare_query(self, request):
-        try:
-            socket.inet_aton(request)
-        except socket.error:
-            raise ValueError('wrong ip format')
-        return '.'.join(reversed(request.split('.')))
+        address = ipaddress.ip_address(request)
+        if address.version == 4:
+            return '.'.join(reversed(request.split('.')))
+        elif address.version == 6:
+            # according to RFC: https://tools.ietf.org/html/rfc5782#section-2.4
+            request_stripped = request.replace(':', '')
+            return '.'.join(reversed([x for x in request_stripped]))
+        else:
+            raise ValueError('unknown ip version')
+
 
 
 

@@ -1,5 +1,6 @@
 import pytest
 from .checker import DNSBLChecker, DNSBLIpChecker, DNSBLDomainChecker
+from .providers import Provider
 
 # IP TESTS
 def test_checker():
@@ -12,6 +13,19 @@ def test_checker():
     # check bulk check
     assert results[0].detected_by == res.detected_by
     assert not results[1].blacklisted
+
+def test_checker_ipv6():
+    checker = DNSBLIpChecker()
+    res = checker.check('2001:4860:4860::8844')
+    assert not res.blacklisted
+    assert not res.categories
+    assert not res.detected_by
+    assert not res.failed_providers
+    checker = DNSBLIpChecker(providers=[Provider('v6.fullbogons.cymru.com')])
+    res = checker.check('::1')
+    assert res.blacklisted
+    assert res.categories
+    assert res.detected_by
 
 def test_providers():
     """ Providers should not mark google ip as bad """
