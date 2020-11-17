@@ -1,3 +1,6 @@
+import asyncio
+import threading
+
 import pytest
 from .checker import DNSBLChecker, DNSBLIpChecker, DNSBLDomainChecker
 from .providers import Provider
@@ -89,6 +92,17 @@ def test_capitalization_in_domain():
         assert not res.detected_by
         assert not res.failed_providers
 
+# Threading tests
+def test_main_thread():
+    result = None
+    def test():
+        nonlocal result
+        checker = DNSBLIpChecker()
+        result = checker.check('68.128.212.240')
+    thr = threading.Thread(target=test)
+    thr.start()
+    thr.join()
+    assert result.blacklisted
 
 ## COMPAT TESTS
 def test_checker_compat_0_6():

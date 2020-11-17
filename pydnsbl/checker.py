@@ -13,6 +13,7 @@ import idna
 import ipaddress
 import re
 import sys
+import threading
 import warnings
 
 import aiodns
@@ -93,8 +94,11 @@ class BaseDNSBLChecker(abc.ABC):
                 raise ValueError('providers should contain only Provider instances')
             self.providers.append(provider)
         if not loop:
-            self._loop = asyncio.new_event_loop()
-            asyncio.set_event_loop(self._loop)
+            if threading.current_thread() == threading.main_thread():
+                self._loop = asyncio.get_event_loop()
+            else:
+                self._loop = asyncio.new_event_loop()
+                asyncio.set_event_loop(self._loop)
         else:
             self._loop = loop
         self._resolver = aiodns.DNSResolver(timeout=timeout, tries=tries, loop=self._loop)
