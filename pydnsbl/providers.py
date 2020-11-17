@@ -85,7 +85,6 @@ _BASE_PROVIDERS = [
     'dul.dnsbl.sorbs.net',
     'dul.ru',
     'dyna.spamrats.com',
-    'dynip.rothen.com',
     'http.dnsbl.sorbs.net'
     'images.rbl.msrbl.net',
     'ips.backscatterer.org',
