@@ -72,11 +72,12 @@ class DNSBLResponse:
     """
     DNSBL Response object
     """
-    def __init__(self, addr=None, provider=None, response=None, error=None):
+    def __init__(self, addr=None, provider=None, response=None, error=None, ns=None):
         self.addr = addr
         self.provider = provider
         self.response = response
         self.error = error
+        self.ns = ns
 
 class BaseDNSBLChecker(abc.ABC):
     """ BASE Checker for DNSBL lists
@@ -84,6 +85,7 @@ class BaseDNSBLChecker(abc.ABC):
             * providers(list) - list of providers (Provider instance or str)
             * timeout(int) - timeout of dns requests will be passed to resolver
             * tries(int) - retry times
+            * ns(list) - nameservers to use for lookup
     """
 
     def __init__(self, providers=BASE_PROVIDERS, timeout=5,
@@ -101,7 +103,7 @@ class BaseDNSBLChecker(abc.ABC):
                 asyncio.set_event_loop(self._loop)
         else:
             self._loop = loop
-        self._resolver = aiodns.DNSResolver(timeout=timeout, tries=tries, loop=self._loop)
+        self._resolver = aiodns.DNSResolver(timeout=timeout, tries=tries, loop=self._loop, nameservers=ns)
         self._semaphore = asyncio.Semaphore(concurrency)
 
 
