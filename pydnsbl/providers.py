@@ -15,8 +15,13 @@ DNSBL_CATEGORY_LEGIT = 'legit'
 
 class Provider(object):
 
-    def __init__(self, host):
+    def __init__(self, host, ns=None):
+        """
+        host: the hostname of provider
+        ns: the nameserver IP to use for direct lookup
+        """
         self.host = host
+        self.ns = ns
 
     def process_response(self, response):
         """
@@ -138,8 +143,8 @@ class DblSpamhaus(Provider):
         '127.0.1.106': {DNSBL_CATEGORY_ABUSED,  DNSBL_CATEGORY_LEGIT, DNSBL_CATEGORY_CNC}
     }
 
-    def __init__(self, host='dbl.spamhaus.org'):
-        Provider.__init__(self, host=host)
+    def __init__(self, host='dbl.spamhaus.org', ns=None):
+        Provider.__init__(self, host=host, ns=ns)
 
     def process_response(self, response):
         categories = set()
