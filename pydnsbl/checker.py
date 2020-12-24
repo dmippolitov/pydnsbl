@@ -72,12 +72,11 @@ class DNSBLResponse:
     """
     DNSBL Response object
     """
-    def __init__(self, addr=None, provider=None, response=None, error=None, ns=None):
+    def __init__(self, addr=None, provider=None, response=None, error=None):
         self.addr = addr
         self.provider = provider
         self.response = response
         self.error = error
-        self.ns = ns
 
 class BaseDNSBLChecker(abc.ABC):
     """ BASE Checker for DNSBL lists
@@ -89,8 +88,9 @@ class BaseDNSBLChecker(abc.ABC):
     """
 
     def __init__(self, providers=BASE_PROVIDERS, timeout=5,
-                 tries=2, concurrency=200, loop=None):
+                 tries=2, concurrency=200, loop=None, ns=None):
         self.providers = []
+        self.ns = ns
         for provider in providers:
             if not isinstance(provider, Provider):
                 raise ValueError('providers should contain only Provider instances')
