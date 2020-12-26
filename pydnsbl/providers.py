@@ -12,6 +12,7 @@ DNSBL_CATEGORY_MALWARE = 'malware'
 DNSBL_CATEGORY_CNC = 'cnc'
 DNSBL_CATEGORY_ABUSED = 'abused'
 DNSBL_CATEGORY_LEGIT = 'legit'
+DNSBL_CATEGORY_DYNAMIC = 'dynamic'
 
 class Provider(object):
 
@@ -62,6 +63,8 @@ class ZenSpamhaus(Provider):
                 categories.add(DNSBL_CATEGORY_SPAM)
             elif result.host in ['127.0.0.4', '127.0.0.5', '127.0.0.6', '127.0.0.7']:
                 categories.add(DNSBL_CATEGORY_EXPLOITS)
+            elif result.host in ['127.0.0.10', '127.0.0.11']:
+                categories.add(DNSBL_CATEGORY_DYNAMIC)
             else:
                 categories.add(DNSBL_CATEGORY_UNKNOWN)
         return categories
