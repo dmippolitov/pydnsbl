@@ -7,7 +7,7 @@ Usually ip check run for 50+ lists takes less than one second. Also allow to che
 
 ## Installation
 
-`pip intall pydnsbl`
+`pip install pydnsbl`
 
 ## Requirements
 
