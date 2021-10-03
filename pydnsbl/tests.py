@@ -49,7 +49,7 @@ def test_wrong_ip_format():
 # DOMAIN TESTS
 def test_domain_checker():
     checker = DNSBLDomainChecker()
-    malicious_domain = 'etoroinvestmentltd.com'
+    malicious_domain = 'dbltest.com'
     res = checker.check(malicious_domain)
     assert res.blacklisted
     assert res.categories
@@ -61,10 +61,11 @@ def test_domain_checker():
 
 def test_domain_idna():
     checker = DNSBLDomainChecker()
-    res = checker.check('вуцхгйю.рф')
-    assert res.blacklisted
-    assert res.categories
-    assert res.detected_by
+    res = checker.check('дом.рф')
+    assert not res.blacklisted
+    assert not res.categories
+    assert not res.detected_by
+    assert not res.failed_providers
 
 def test_domain_providers():
     """ Domain Providers should not mark google.com as bad """
