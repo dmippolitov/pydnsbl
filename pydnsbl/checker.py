@@ -84,11 +84,13 @@ class BaseDNSBLChecker(abc.ABC):
             * providers(list) - list of providers (Provider instance or str)
             * timeout(int) - timeout of dns requests will be passed to resolver
             * tries(int) - retry times
+            * ns(list) - nameservers to use for lookup
     """
 
     def __init__(self, providers=BASE_PROVIDERS, timeout=5,
-                 tries=2, concurrency=200, loop=None):
+                 tries=2, concurrency=200, loop=None, ns=None):
         self.providers = []
+        self.ns = ns
         for provider in providers:
             if not isinstance(provider, Provider):
                 raise ValueError('providers should contain only Provider instances')
@@ -101,7 +103,7 @@ class BaseDNSBLChecker(abc.ABC):
                 asyncio.set_event_loop(self._loop)
         else:
             self._loop = loop
-        self._resolver = aiodns.DNSResolver(timeout=timeout, tries=tries, loop=self._loop)
+        self._resolver = aiodns.DNSResolver(timeout=timeout, tries=tries, loop=self._loop, nameservers=ns)
         self._semaphore = asyncio.Semaphore(concurrency)
 
 

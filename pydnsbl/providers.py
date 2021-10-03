@@ -12,11 +12,17 @@ DNSBL_CATEGORY_MALWARE = 'malware'
 DNSBL_CATEGORY_CNC = 'cnc'
 DNSBL_CATEGORY_ABUSED = 'abused'
 DNSBL_CATEGORY_LEGIT = 'legit'
+DNSBL_CATEGORY_DYNAMIC = 'dynamic'
 
 class Provider(object):
 
-    def __init__(self, host):
+    def __init__(self, host, ns=None):
+        """
+        host: the hostname of provider
+        ns: the nameserver IP to use for direct lookup
+        """
         self.host = host
+        self.ns = ns
 
     def process_response(self, response):
         """
@@ -57,6 +63,8 @@ class ZenSpamhaus(Provider):
                 categories.add(DNSBL_CATEGORY_SPAM)
             elif result.host in ['127.0.0.4', '127.0.0.5', '127.0.0.6', '127.0.0.7']:
                 categories.add(DNSBL_CATEGORY_EXPLOITS)
+            elif result.host in ['127.0.0.10', '127.0.0.11']:
+                categories.add(DNSBL_CATEGORY_DYNAMIC)
             else:
                 categories.add(DNSBL_CATEGORY_UNKNOWN)
         return categories
@@ -131,8 +139,8 @@ class DblSpamhaus(Provider):
         '127.0.1.106': {DNSBL_CATEGORY_ABUSED,  DNSBL_CATEGORY_LEGIT, DNSBL_CATEGORY_CNC}
     }
 
-    def __init__(self, host='dbl.spamhaus.org'):
-        Provider.__init__(self, host=host)
+    def __init__(self, host='dbl.spamhaus.org', ns=None):
+        Provider.__init__(self, host=host, ns=ns)
 
     def process_response(self, response):
         categories = set()
