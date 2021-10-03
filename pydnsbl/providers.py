@@ -82,16 +82,13 @@ _BASE_PROVIDERS = [
     'dnsbl.dronebl.org',
     'dnsbl.sorbs.net',
     'drone.abuse.ch',
-    'dul.dnsbl.sorbs.net',
     'dul.ru',
     'dyna.spamrats.com',
-    'http.dnsbl.sorbs.net'
     'images.rbl.msrbl.net',
     'ips.backscatterer.org',
     'ix.dnsbl.manitu.net',
     'korea.services.net',
     'matrix.spfbl.net',
-    'misc.dnsbl.sorbs.net',
     'noptr.spamrats.com',
     'phishing.rbl.msrbl.net',
     'proxy.bl.gweep.ca',
@@ -103,8 +100,6 @@ _BASE_PROVIDERS = [
     'relays.nether.net',
     'residential.block.transip.nl',
     'singular.ttk.pte.hu',
-    'smtp.dnsbl.sorbs.net',
-    'socks.dnsbl.sorbs.net',
     'spam.dnsbl.sorbs.net',
     'spam.rbl.msrbl.net',
     'spam.spamrats.com',
@@ -116,10 +111,8 @@ _BASE_PROVIDERS = [
     'virbl.bit.nl',
     'virus.rbl.msrbl.net',
     'virus.rbl.jp',
-    'web.dnsbl.sorbs.net',
     'wormrbl.imp.ch',
     'z.mailspike.net',
-    'zombie.dnsbl.sorbs.net',
 ]
 
 class DblSpamhaus(Provider):
