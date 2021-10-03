@@ -59,14 +59,6 @@ def test_domain_checker():
     assert results[0].detected_by == res.detected_by
     assert not results[1].blacklisted
 
-def test_domain_idna():
-    checker = DNSBLDomainChecker()
-    res = checker.check('дом.рф')
-    assert not res.blacklisted
-    assert not res.categories
-    assert not res.detected_by
-    assert not res.failed_providers
-
 def test_domain_providers():
     """ Domain Providers should not mark google.com as bad """
     checker = DNSBLDomainChecker()
@@ -77,14 +69,16 @@ def test_domain_providers():
     assert not res.failed_providers
 
 def test_wrong_domain_format():
-    misformated_ips = ['abc-', '8.8.8.256']
+    misformated_ips = ['abc-', '8.8.8.256', 'bababa']
     for ip in misformated_ips:
         checker = DNSBLDomainChecker()
         with pytest.raises(ValueError):
              print(checker.check(ip))
 
-def test_capitalization_in_domain():
-    capitalized_domains = ['Google.com', 'Facebook.com']
+
+def test_domain_variants():
+    # capitalized / 3th+ levels, idna
+    capitalized_domains = ['Google.com', 'дом.рф', 'www.digital.govt.nz']
     for domain in capitalized_domains:
         checker = DNSBLDomainChecker()
         res = checker.check(domain)
