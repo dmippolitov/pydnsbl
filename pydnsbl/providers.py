@@ -2,6 +2,8 @@
 Place to define providers.
 Most part of _BASE_PROVIDERS was taken from https://github.com/vincecarney/dnsbl
 """
+import os
+
 ### DNSBL CATEGORIES ###
 # providers answers could be interpreted in one of the following categories
 DNSBL_CATEGORY_UNKNOWN = 'unknown'
@@ -156,5 +158,9 @@ _DOMAIN_PROVIDERS = [
     'rhsbl.sorbs.net '
 ]
 
-BASE_PROVIDERS = [Provider(host) for host in _BASE_PROVIDERS] + [ZenSpamhaus()]
-BASE_DOMAIN_PROVIDERS = [Provider(host) for host in _DOMAIN_PROVIDERS] + [DblSpamhaus()]
+BASE_PROVIDERS = [Provider(host) for host in _BASE_PROVIDERS]
+BASE_DOMAIN_PROVIDERS = [Provider(host) for host in _DOMAIN_PROVIDERS]
+
+if os.getenv('USE_SPAMHAUS', 'false') == 'true':
+    BASE_PROVIDERS.append(ZenSpamhaus())
+    BASE_DOMAIN_PROVIDERS.append(DblSpamhaus())
