@@ -1,4 +1,5 @@
 # Pydnsbl
+![pytest workflow](https://github.com/dmippolitov/pydnsbl/actions/workflows/python-app.yml/badge.svg)
 
 Async [dnsbl](https://en.wikipedia.org/wiki/DNSBL) lists checker based
 on asyncio/aiodns. Checks if ip is listed in anti-spam dns blacklists.
@@ -7,7 +8,7 @@ Usually ip check run for 50+ lists takes less than one second. Also allow to che
 
 ## Installation
 
-`pip intall pydnsbl`
+`pip install pydnsbl`
 
 ## Requirements
 
