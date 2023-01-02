@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.5] - 2023-01-02
+### Chaged
+- Updated providers list
+
 ## [1.1.4] - 2021-10-03
 ### Changed
 - improved domain regex to allow usage for 3rd+ level domains (inspired by #22)
