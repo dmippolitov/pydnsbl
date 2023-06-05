@@ -118,7 +118,6 @@ _BASE_PROVIDERS = [
     "blackholes.five-ten-sg.com",
     "combined.rbl.msrbl.net",
     "dnsbl.cyberlogic.net",
-    "dul.ru",
     "images.rbl.msrbl.net",
     "matrix.spfbl.net",
     "phishing.rbl.msrbl.net",
