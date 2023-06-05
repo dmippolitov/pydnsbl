@@ -107,6 +107,12 @@ _BASE_PROVIDERS = [
     'virus.rbl.jp',
     'wormrbl.imp.ch',
     'z.mailspike.net',
+    'web.dnsbl.sorbs.net',
+    'sbl.spamhaus.org',
+    'spam.abuse.ch',
+    'dnsbl.dronebl.org',
+    'ubl.unsubscore.com',
+    'noptr.spamrats.com',
 ]
 
 
