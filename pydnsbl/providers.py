@@ -80,7 +80,6 @@ _BASE_PROVIDERS = [
     'dnsbl.cyberlogic.net',
     'dnsbl.sorbs.net',
     'drone.abuse.ch',
-    'dul.ru',
     'images.rbl.msrbl.net',
     'ips.backscatterer.org',
     'ix.dnsbl.manitu.net',

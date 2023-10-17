@@ -99,6 +99,13 @@ def test_main_thread():
     thr.join()
     assert result.blacklisted
 
+# ipv6 tests
+def test_ipv6_converting():
+    # https://datatracker.ietf.org/doc/html/rfc5782#section-2.4
+    checker = DNSBLIpChecker()
+    assert checker.prepare_query('2001:db8:1:2:3:4:567:89ab') == "b.a.9.8.7.6.5.0.4.0.0.0.3.0.0.0.2.0.0.0.1.0.0.0.8.b.d.0.1.0.0.2"
+
+
 ## COMPAT TESTS
 def test_checker_compat_0_6():
     checker = DNSBLChecker()
