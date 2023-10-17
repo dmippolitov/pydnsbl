@@ -164,7 +164,7 @@ class DNSBLIpChecker(BaseDNSBLChecker):
             return '.'.join(reversed(request.split('.')))
         elif address.version == 6:
             # according to RFC: https://tools.ietf.org/html/rfc5782#section-2.4
-            request_stripped = request.replace(':', '')
+            request_stripped = address.exploded.replace(':', '')
             return '.'.join(reversed([x for x in request_stripped]))
         else:
             raise ValueError('unknown ip version')
