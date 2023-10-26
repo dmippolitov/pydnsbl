@@ -178,7 +178,7 @@ class DNSBLDomainChecker(BaseDNSBLChecker):
     """
 
     # https://regex101.com/r/vdrgm7/1
-    DOMAIN_REGEX = re.compile(r"^(((?!-))(xn--|_{1,1})?[a-z0-9-]{0,61}[a-z0-9]{1,1}\.)*(xn--[a-z0-9][a-z0-9\-]{0,60}|[a-z0-9-]{1,30}\.[a-z]{2,})$")
+    DOMAIN_REGEX = re.compile(r"^(((?!-))(xn--|_{1,1})?[a-z0-9-]{0,61}[a-z0-9]{1,1}\.)*(xn--[a-z0-9][a-z0-9\-]{0,255}|[a-z0-9-]{1,255}\.[a-z]{2,})$")
 
     def __init__(self, providers=BASE_DOMAIN_PROVIDERS, timeout=5,
                  tries=2, concurrency=200, loop=None):
