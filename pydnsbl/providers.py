@@ -62,7 +62,6 @@ class ZenSpamhaus(Provider):
         return categories
 
 # this list is converted into list of Providers bellow
-
 _BASE_PROVIDERS = [
     'all.s5h.net',
     'aspews.ext.sorbs.net',
@@ -107,7 +106,14 @@ _BASE_PROVIDERS = [
     'virus.rbl.jp',
     'wormrbl.imp.ch',
     'z.mailspike.net',
+    'web.dnsbl.sorbs.net',
+    'sbl.spamhaus.org',
+    'spam.abuse.ch',
+    'dnsbl.dronebl.org',
+    'ubl.unsubscore.com',
+    'noptr.spamrats.com',
 ]
+
 
 class DblSpamhaus(Provider):
     """ Spamhaus domain blacklist
