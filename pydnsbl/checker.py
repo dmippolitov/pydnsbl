@@ -18,7 +18,7 @@ import warnings
 
 import aiodns
 
-from .providers import Provider, BASE_PROVIDERS, BASE_DOMAIN_PROVIDERS
+from .providers import Provider, BASE_PROVIDERS, BASE_DOMAIN_PROVIDERS, DNSBL_CATEGORY_ERROR
 
 if sys.platform == 'win32' and sys.version_info >= (3, 8):
     # fixes https://github.com/dmippolitov/pydnsbl/issues/12
@@ -58,10 +58,12 @@ class DNSBLResult:
             if not result.response:
                 continue
             # set blacklisted to True if ip is detected with at least one dnsbl
-            self.blacklisted = True
             provider_categories = provider.process_response(result.response)
-            self.categories = self.categories.union(provider_categories)
-            self.detected_by[provider.host] = list(provider_categories)
+            # If the response is an error, do not consider it as blacklisted (refer to https://www.spamhaus.org/faqs/domain-blocklist/#291:~:text=The%20following%20special%20codes%20indicate%20an%20error)
+            if provider_categories != {DNSBL_CATEGORY_ERROR}:
+                self.blacklisted = True
+                self.categories = self.categories.union(provider_categories)
+                self.detected_by[provider.host] = list(provider_categories)
 
     def __repr__(self):
         blacklisted = '[BLACKLISTED]' if self.blacklisted else ''
