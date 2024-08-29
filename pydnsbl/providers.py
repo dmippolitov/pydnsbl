@@ -74,10 +74,10 @@ _BASE_PROVIDERS = [
     'blackholes.five-ten-sg.com',
     'blacklist.woody.ch',
     'bogons.cymru.com',
-    # zen.spamhaus.org is already being used. abuseat.org redirects to spamhaus.org
+    # The provider zen.spamhaus.org is already being used. abuseat.org redirects to spamhaus.org
     # Additionally, abuseat.org has the same behaviour as zen.spamhaus.org
     # and we manage the new DNSBL_CATEGORY_ERROR in the zen.spamhaus.org Provider class
-    # 'cbl.abuseat.org', 
+    # 'cbl.abuseat.org',
     'combined.abuse.ch',
     'combined.rbl.msrbl.net',
     'db.wpbl.info',
