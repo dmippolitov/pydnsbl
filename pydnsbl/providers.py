@@ -82,7 +82,6 @@ _BASE_PROVIDERS = [
     'drone.abuse.ch',
     'images.rbl.msrbl.net',
     'ips.backscatterer.org',
-    'ix.dnsbl.manitu.net',
     'korea.services.net',
     'matrix.spfbl.net',
     'phishing.rbl.msrbl.net',
