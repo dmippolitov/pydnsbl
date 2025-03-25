@@ -12,7 +12,7 @@ Usually ip check run for 50+ lists takes less than one second. Also allow to che
 
 ## Requirements
 
-- python >= 3.5
+- python >= 3.6
 - aiodns
 
 ## Usage
