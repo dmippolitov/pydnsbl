@@ -11,8 +11,8 @@ def get_long_description():
         return f.read() 
 
 requirements = [
-    'aiodns>=1.1.1,<=2.0',
-    'idna>=2.9,<3'
+    'aiodns>=3,<4',
+    'idna>=2.9,<4'
 ]
 
 
@@ -38,7 +38,7 @@ setup(
         'License :: OSI Approved :: MIT License',
         'Operating System :: OS Independent',
         'Programming Language :: Python',
-        'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6',
         'Topic :: Utilities',
     ],
 )
