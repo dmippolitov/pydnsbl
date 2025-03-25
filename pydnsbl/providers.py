@@ -97,7 +97,6 @@ _BASE_PROVIDERS = [
     'spam.dnsbl.sorbs.net',
     'spam.rbl.msrbl.net',
     'spambot.bls.digibase.ca',
-    'spamlist.or.kr',
     'spamrbl.imp.ch',
     'spamsources.fabel.dk',
     'ubl.lashback.com',
