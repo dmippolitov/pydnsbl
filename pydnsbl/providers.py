@@ -12,6 +12,7 @@ DNSBL_CATEGORY_MALWARE = 'malware'
 DNSBL_CATEGORY_CNC = 'cnc'
 DNSBL_CATEGORY_ABUSED = 'abused'
 DNSBL_CATEGORY_LEGIT = 'legit'
+DNSBL_CATEGORY_ERROR = 'error'
 
 class Provider(object):
 
@@ -57,6 +58,8 @@ class ZenSpamhaus(Provider):
                 categories.add(DNSBL_CATEGORY_SPAM)
             elif result.host in ['127.0.0.4', '127.0.0.5', '127.0.0.6', '127.0.0.7']:
                 categories.add(DNSBL_CATEGORY_EXPLOITS)
+            elif result.host in ['127.255.255.252', '127.255.255.254', '127.255.255.255']:
+                categories.add(DNSBL_CATEGORY_ERROR)
             else:
                 categories.add(DNSBL_CATEGORY_UNKNOWN)
         return categories
@@ -71,7 +74,10 @@ _BASE_PROVIDERS = [
     'blackholes.five-ten-sg.com',
     'blacklist.woody.ch',
     'bogons.cymru.com',
-    'cbl.abuseat.org',
+    # The provider zen.spamhaus.org is already being used. abuseat.org redirects to spamhaus.org
+    # Additionally, abuseat.org has the same behaviour as zen.spamhaus.org
+    # and we manage the new DNSBL_CATEGORY_ERROR in the zen.spamhaus.org Provider class
+    # 'cbl.abuseat.org',
     'combined.abuse.ch',
     'combined.rbl.msrbl.net',
     'db.wpbl.info',
@@ -120,7 +126,10 @@ class DblSpamhaus(Provider):
         '127.0.1.103': {DNSBL_CATEGORY_ABUSED, DNSBL_CATEGORY_SPAM},
         '127.0.1.104': {DNSBL_CATEGORY_ABUSED, DNSBL_CATEGORY_LEGIT, DNSBL_CATEGORY_PHISH},
         '127.0.1.105': {DNSBL_CATEGORY_ABUSED, DNSBL_CATEGORY_LEGIT, DNSBL_CATEGORY_MALWARE},
-        '127.0.1.106': {DNSBL_CATEGORY_ABUSED,  DNSBL_CATEGORY_LEGIT, DNSBL_CATEGORY_CNC}
+        '127.0.1.106': {DNSBL_CATEGORY_ABUSED,  DNSBL_CATEGORY_LEGIT, DNSBL_CATEGORY_CNC},
+        '127.255.255.252': {DNSBL_CATEGORY_ERROR},
+        '127.255.255.254': {DNSBL_CATEGORY_ERROR},
+        '127.255.255.255': {DNSBL_CATEGORY_ERROR},
     }
 
     def __init__(self, host='dbl.spamhaus.org'):
